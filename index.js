@@ -1,5 +1,6 @@
 const express = require('express')
 //require('express-async-errors');
+const cors = require('cors')
 const dotenv = require('dotenv')
 const errorHandler = require('./middlewares/error')
 const connectDB = require('./config/db')
@@ -15,6 +16,9 @@ connectDB()
 
 // Body parser
 app.use(express.json())
+
+// Enable CORS
+app.use(cors())
 
 // loading routes
 const auth = require('./routes/auth')

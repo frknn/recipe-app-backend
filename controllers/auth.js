@@ -18,6 +18,7 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   let { email, password } = req.body
 
+  console.log(email, " - ", password)
   try {
 
     // Make sure that email and password exist
@@ -51,7 +52,8 @@ const login = async (req, res, next) => {
       .cookie('token', token, optipns)
       .json({
         success: true,
-        token
+        token,
+        user
       })
   } catch (error) {
     next(error)
