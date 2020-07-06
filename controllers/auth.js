@@ -40,7 +40,7 @@ const login = async (req, res, next) => {
     }
     const token = user.getSignedJwtToken()
 
-    const optipns = {
+    const options = {
       expires: new Date(
         Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
       ),
@@ -49,7 +49,7 @@ const login = async (req, res, next) => {
 
     res
       .status(200)
-      .cookie('token', token, optipns)
+      .cookie('token', token, options)
       .json({
         success: true,
         token,

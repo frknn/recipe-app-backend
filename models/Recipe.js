@@ -23,7 +23,7 @@ const RecipeSchema = new mongoose.Schema({
   },
   coverPhoto: {
     type: String,
-    required: [true, 'Please provide a cover photo']
+    // required: [true, 'Please provide a cover photo']
   },
   recipe: {
     type: String,
@@ -32,6 +32,10 @@ const RecipeSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Please add category']
+  },
+  amount: {
+    type: Number,
+    min: 1
   },
   owner: {
     type: mongoose.Schema.ObjectId,
