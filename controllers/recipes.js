@@ -18,7 +18,26 @@ const getRecipe = async (req, res, next) => {
 
 const getAllRecipes = async (req, res, next) => {
   try {
-    const recipes = await Recipe.find()
+    console.log('QUERY: ', req.query)
+
+    let queryObject = {}
+
+    Object.keys(req.query).forEach(k => {
+      if (k === 'ingredients') {
+        queryObject[k] = { $all: req.query[k].split(',') }
+      } else if (k === 'prepTime') {
+        queryObject[k] = { $lte: req.query[k] }
+      } else if (k === 'cookTime') {
+        queryObject[k] = { $lte: req.query[k] }
+      } else if (k === 'category') {
+        queryObject[k] = req.query[k]
+      }
+    })
+
+    console.log('BUILT QUERY OBJECT: ', queryObject)
+
+    const recipes = await Recipe.find(queryObject)
+
     res.status(200).json({
       success: true,
       data: recipes

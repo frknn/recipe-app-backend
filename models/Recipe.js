@@ -25,9 +25,9 @@ const RecipeSchema = new mongoose.Schema({
     type: String,
     // required: [true, 'Please provide a cover photo']
   },
-  recipe: {
-    type: String,
-    required: [true, 'Please add the recipe']
+  recipeSteps: {
+    type: [String],
+    required: [true, 'Please add recipe steps']
   },
   category: {
     type: String,
