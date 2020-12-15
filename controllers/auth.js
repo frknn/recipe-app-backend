@@ -17,8 +17,9 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   let { email, password } = req.body
-
-  console.log(email, " - ", password)
+  console.log("Request Body: ", req.body)
+  console.log('Email: ', email)
+  console.log('Password: ', password)
   try {
 
     // Make sure that email and password exist
@@ -31,7 +32,6 @@ const login = async (req, res, next) => {
     if (!user) {
       throw new ErrorResponse('Invalid credentials', 401)
     }
-
 
     // Check if given password matches with users password
     const match = await user.isPwMatch(password)
@@ -46,6 +46,8 @@ const login = async (req, res, next) => {
       ),
       httpOnly: true
     }
+
+    user.password = undefined
 
     res
       .status(200)

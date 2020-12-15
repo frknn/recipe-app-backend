@@ -1,9 +1,10 @@
 const Recipe = require('../models/Recipe')
 const ErrorResponse = require('../utils/ErrorResponse')
+const cloudinary = require('cloudinary').v2
 
 const getRecipe = async (req, res, next) => {
   try {
-    const recipe = await Recipe.findById(req.params.id)
+    const recipe = await Recipe.findById(req.params.id).populate('owner')
     if (!recipe) {
       throw new ErrorResponse('No recipe found with given id', 404)
     }
@@ -36,7 +37,7 @@ const getAllRecipes = async (req, res, next) => {
 
     console.log('BUILT QUERY OBJECT: ', queryObject)
 
-    const recipes = await Recipe.find(queryObject)
+    const recipes = await Recipe.find(queryObject).populate('owner')
 
     res.status(200).json({
       success: true,
@@ -52,11 +53,14 @@ const createRecipe = async (req, res, next) => {
     // Add user(objectId) to req.body
     req.body.owner = req.user.id;
 
-    const recipe = await Recipe.create(req.body)
+    // create model, save then populate user info
+    const recipeObject = new Recipe(req.body)
+    const savedRecipe = await recipeObject.save()
+    const populatedRecipe = await savedRecipe.populate('owner').execPopulate()
 
     res.status(200).json({
       success: true,
-      data: recipe
+      data: populatedRecipe
     })
   } catch (error) {
     next(error)
@@ -65,7 +69,6 @@ const createRecipe = async (req, res, next) => {
 
 const updateRecipe = async (req, res, next) => {
   try {
-    let fieldsNotAllowedToUpdate = ['ingredients', 'coverPhoto']
     let recipe = await Recipe.findById(req.params.id)
 
     if (!recipe) {
@@ -75,12 +78,6 @@ const updateRecipe = async (req, res, next) => {
     if (req.user.role !== 'admin' && recipe.owner.toString() !== req.user.id.toString()) {
       throw new ErrorResponse("Users are not allowed to update other users' recipes", 403)
     }
-
-    Object.keys(req.body).forEach(key => {
-      if (fieldsNotAllowedToUpdate.includes(key)) {
-        throw new ErrorResponse(`Attempted to update a forbidden field: <${key}>`, 403)
-      }
-    })
 
     recipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -122,10 +119,44 @@ const deleteRecipe = async (req, res, next) => {
   }
 }
 
+const uploadImg = async (req, res, next) => {
+  try {
+    if (req.files === null) {
+      throw new ErrorResponse('Resim yüklenmedi!', 400)
+    }
+
+    const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg']
+
+    const file = req.files.file
+    console.log('File mimetype: ', file.mimetype)
+    if(!allowedFileTypes.includes(file.mimetype)){
+      throw new ErrorResponse('You can only upload PNG, JPG or JPEG.',400)
+    }
+
+    const imgPath = `${process.cwd()}/public/images/${file.name}`
+    file.mv(imgPath, err => {
+      if (err) {
+        console.log('ERRRRRROR:', err)
+        throw new ErrorResponse('bruh', 500)
+      }
+    })
+
+    const image = await cloudinary.uploader.upload(imgPath)
+
+    res.status(200).json({
+      imgUrl: image.url
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   getRecipe,
   getAllRecipes,
   createRecipe,
   updateRecipe,
-  deleteRecipe
+  deleteRecipe,
+  uploadImg
 }

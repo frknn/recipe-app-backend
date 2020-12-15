@@ -39,9 +39,8 @@ const RecipeSchema = new mongoose.Schema({
   },
   owner: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User',
-    required: true
-  },
+    ref: 'User'
+  }
 })
 
 module.exports = mongoose.model('Recipe', RecipeSchema)

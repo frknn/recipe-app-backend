@@ -2,6 +2,7 @@ const express = require('express')
 //require('express-async-errors');
 const cors = require('cors')
 const dotenv = require('dotenv')
+const fileUpload = require('express-fileupload')
 const errorHandler = require('./middlewares/error')
 const connectDB = require('./config/db')
 
@@ -11,6 +12,7 @@ const app = express()
 // loading env variables
 dotenv.config({ path: './config/config.env' })
 
+
 // connecting to db
 connectDB()
 
@@ -19,6 +21,9 @@ app.use(express.json())
 
 // Enable CORS
 app.use(cors())
+
+// file uploader
+app.use(fileUpload())
 
 // loading routes
 const auth = require('./routes/auth')
