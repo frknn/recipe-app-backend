@@ -32,6 +32,8 @@ const getAllRecipes = async (req, res, next) => {
         queryObject[k] = { $lte: req.query[k] }
       } else if (k === 'category') {
         queryObject[k] = req.query[k]
+      } else if (k === 'title') {
+        queryObject[k] = req.query[k]
       }
     })
 
@@ -129,8 +131,8 @@ const uploadImg = async (req, res, next) => {
 
     const file = req.files.file
     console.log('File mimetype: ', file.mimetype)
-    if(!allowedFileTypes.includes(file.mimetype)){
-      throw new ErrorResponse('You can only upload PNG, JPG or JPEG.',400)
+    if (!allowedFileTypes.includes(file.mimetype)) {
+      throw new ErrorResponse('You can only upload PNG, JPG or JPEG.', 400)
     }
 
     const imgPath = `${process.cwd()}/public/images/${file.name}`

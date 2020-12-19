@@ -34,10 +34,11 @@ const UserSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user'
   },
-  recipesSaved: {
-    type: [mongoose.Schema.ObjectId],
-    ref: 'Recipe'
-  },
+  // recipesSaved: {
+  //   type: [mongoose.Schema.ObjectId],
+  //   ref: 'Recipe'
+  // },
+  recipesSaved:[{type: mongoose.Schema.Types.ObjectId, ref: 'Recipe'}],
   createdAt: {
     type: Date,
     default: Date.now

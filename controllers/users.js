@@ -4,7 +4,7 @@ const ErrorResponse = require('../utils/ErrorResponse')
 const getAllUsers = async (req, res, next) => {
 
   try {
-    const users = await User.find().populate('recipes')
+    const users = await User.find().populate('recipes').populate('recipesSaved')
     res.status(200).json({
       success: true,
       data: users
@@ -16,7 +16,7 @@ const getAllUsers = async (req, res, next) => {
 
 const getSingleUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).populate('recipes')
+    const user = await User.findById(req.params.id).populate('recipes').populate('recipesSaved')
     if (!user) {
       throw new ErrorResponse('No user found with given id', 404)
     }
