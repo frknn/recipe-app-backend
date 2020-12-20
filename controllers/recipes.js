@@ -26,14 +26,18 @@ const getAllRecipes = async (req, res, next) => {
     Object.keys(req.query).forEach(k => {
       if (k === 'ingredients') {
         queryObject[k] = { $all: req.query[k].split(',') }
-      } else if (k === 'prepTime') {
+      }
+      if (k === 'prepTime') {
         queryObject[k] = { $lte: req.query[k] }
-      } else if (k === 'cookTime') {
+      }
+      if (k === 'cookTime') {
         queryObject[k] = { $lte: req.query[k] }
-      } else if (k === 'category') {
+      }
+      if (k === 'category') {
         queryObject[k] = req.query[k]
-      } else if (k === 'title') {
-        queryObject[k] = req.query[k]
+      }
+      if (k === 'title') {
+        queryObject[k] = { $regex: req.query[k], $options: 'i' }
       }
     })
 
