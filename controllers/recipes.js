@@ -18,14 +18,26 @@ const getRecipe = async (req, res, next) => {
 }
 
 const getAllRecipes = async (req, res, next) => {
+
+  const isIncluded = (x, arr) => arr.some(elem => elem.includes(x))
+
+  const filterRecipesByIngredients = (recipes, ingredients) => {
+    return recipes.filter(
+      r => ingredients.every(
+        ing => isIncluded(ing, r.ingredients)
+      )
+    )
+  }
+
   try {
     console.log('QUERY: ', req.query)
 
     let queryObject = {}
+    let ingredientsQueryArray = []
 
     Object.keys(req.query).forEach(k => {
       if (k === 'ingredients') {
-        queryObject[k] = { $all: req.query[k].split(',') }
+        ingredientsQueryArray = req.query['ingredients'].split(',')
       }
       if (k === 'prepTime') {
         queryObject[k] = { $lte: req.query[k] }
@@ -43,7 +55,9 @@ const getAllRecipes = async (req, res, next) => {
 
     console.log('BUILT QUERY OBJECT: ', queryObject)
 
-    const recipes = await Recipe.find(queryObject).populate('owner')
+    let recipes = await Recipe.find(queryObject).populate('owner')
+
+    recipes = filterRecipesByIngredients(recipes, ingredientsQueryArray)
 
     res.status(200).json({
       success: true,
