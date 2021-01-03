@@ -31,7 +31,12 @@ const getSingleUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
+    if (req.user._id != req.params.id) {
+      throw new ErrorResponse('Not authorized to update another user!', 401)
+    }
+
     let user = await User.findById(req.params.id)
+
     if (!user) {
       throw new ErrorResponse('No user found with given id', 404)
     }

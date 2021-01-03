@@ -5,7 +5,7 @@ const { getAllUsers, getSingleUser, deleteUser, updateUser } = require('../contr
 
 router.get('/', protect, authorize('user', 'admin'), getAllUsers)
 router.get('/:id', getSingleUser)
-router.put('/:id', updateUser)
+router.put('/:id', protect, updateUser)
 router.delete('/:id', protect, authorize('user', 'admin'), deleteUser)
 
 module.exports = router

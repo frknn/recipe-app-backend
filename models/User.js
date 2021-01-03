@@ -3,6 +3,9 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
+  profilePicture: {
+    type: String,
+  },
   name: {
     type: String,
     required: [true, 'Please add a name'],
@@ -38,7 +41,7 @@ const UserSchema = new mongoose.Schema({
   //   type: [mongoose.Schema.ObjectId],
   //   ref: 'Recipe'
   // },
-  recipesSaved:[{type: mongoose.Schema.Types.ObjectId, ref: 'Recipe'}],
+  recipesSaved: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' }],
   createdAt: {
     type: Date,
     default: Date.now
