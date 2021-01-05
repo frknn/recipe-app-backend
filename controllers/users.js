@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const { use } = require('../routes/users')
 const ErrorResponse = require('../utils/ErrorResponse')
 
 const getAllUsers = async (req, res, next) => {
@@ -55,6 +56,38 @@ const updateUser = async (req, res, next) => {
   }
 }
 
+const addRecipeToFavorites = async (req, res, next) => {
+  try {
+    console.log('backend controller çalıştı')
+    const { recipeId } = req.body
+    let user = await User.findById(req.user._id).populate('recipes')
+    const favoritedByUser = user.recipesSaved.some(r => {
+      console.log(r)
+      console.log(recipeId)
+      console.log(r == recipeId)
+      return r == recipeId
+    }
+    )
+    console.log('FAV BY USER', favoritedByUser)
+    if (favoritedByUser) {
+      console.log('IF')
+      user.recipesSaved = user.recipesSaved.filter(r => r != recipeId)
+    } else {
+      console.log('ELSE')
+      user.recipesSaved.push(recipeId)
+    }
+
+    user = await user.save()
+
+    res.status(200).json({
+      success: true,
+      data: user
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 const deleteUser = async (req, res, next) => {
   try {
     // If user is not admin and tries to delete another user, reject the request
@@ -85,6 +118,7 @@ const deleteUser = async (req, res, next) => {
 module.exports = {
   getAllUsers,
   getSingleUser,
+  addRecipeToFavorites,
   updateUser,
   deleteUser
 }

@@ -28,7 +28,7 @@ const login = async (req, res, next) => {
     }
 
     // Check if user with given email exists
-    const user = await User.findOne({ email }).select('+password')
+    const user = await User.findOne({ email }).select('+password').populate('recipes')
     if (!user) {
       throw new ErrorResponse('Invalid credentials', 401)
     }
