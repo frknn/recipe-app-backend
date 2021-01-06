@@ -39,10 +39,7 @@ const getAllRecipes = async (req, res, next) => {
       if (k === 'ingredients') {
         ingredientsQueryArray = req.query['ingredients'].split(',')
       }
-      if (k === 'prepTime') {
-        queryObject[k] = { $lte: req.query[k] }
-      }
-      if (k === 'cookTime') {
+      if (k === 'prepTime' || k === 'cookTime') {
         queryObject[k] = { $lte: req.query[k] }
       }
       if (k === 'category') {
