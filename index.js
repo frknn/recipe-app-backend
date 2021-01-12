@@ -31,6 +31,9 @@ const users = require('./routes/users')
 const recipes = require('./routes/recipes')
 
 // using routes
+app.get('/', (req, res) => {
+  res.json('HELLO!')
+})
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/users', users)
 app.use('/api/v1/recipes', recipes)
