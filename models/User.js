@@ -3,7 +3,10 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
-  profilePicture: {
+  profilePictureBig: {
+    type: String,
+  },
+  profilePictureSmall: {
     type: String,
   },
   name: {
